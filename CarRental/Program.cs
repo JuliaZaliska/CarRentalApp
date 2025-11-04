@@ -1,98 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CarRental;
+using CarRental.Data;
+using CarRental.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
-namespace CarRentalApp
+var config = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+var options = new DbContextOptionsBuilder<AppDbContext>()
+    .UseSqlServer(config.GetConnectionString("DefaultConnection"))
+    .Options;
+
+/*var db = new AppDbContext();
+//db.Database.EnsureDeleted();
+//db.Database.EnsureCreated();
+
+var car = new CarRental.Models.Car
 {
-    internal class Program
+    VIN = "4HGBH41JXMN109186",
+    Brand = "BMW",
+    Model = "X5",
+    Year = 2020,
+    IsRented = false
+};
+
+db.Cars.Add(car);
+Console.WriteLine($"Adding car: {car.CarId}");
+db.SaveChanges();
+Console.WriteLine($"Adding car: {car.CarId}");*/
+
+/*using (var db = new AppDbContext(options))
+{
+    var cars = db.Cars.ToList();
+    foreach (var c in cars)
     {
-        static void Main(string[] args)
-        {
-            Console.OutputEncoding = System.Text.Encoding.Unicode;
+        Console.WriteLine($"{c.CarId}. {c.Brand} {c.Model} ({c.Year}) - Rented: {c.IsRented}");
+    }
+    Console.WriteLine("\n");
+}
 
-            ICarRepository carRepo = new CarRepository();
-            IRentalService rentalService = new RentalService(carRepo);
+using (var db = new AppDbContext(options))
+{
+    var car = new Car
+    {
+        VIN = "3HGBH41JXMN109186",
+        Brand = "BMW",
+        Model = "x99",
+        Year = 2020,
+        IsRented = false
+    };
 
-            rentalService.RentalStarted += (sender, car) =>
-                Console.WriteLine($"Автомобіль {car.Brand} {car.Model} успішно орендований!");
-            rentalService.RentalEnded += (sender, car) =>
-                Console.WriteLine($"Автомобіль {car.Brand} {car.Model} було успішно повернено!");
+    db.Cars.Add(car);
+    db.SaveChanges();
+}*/
 
-            carRepo.AddCar(new Car("JTDBE32K123456789", "Mazda", "CX-5", 2021));
-            carRepo.AddCar(new Car("WBAJU71030BL12345", "Audi", "Q7", 2017));
-            carRepo.AddCar(new Car("1HGCM82633A004352", "Toyota", "Camry", 2020));
-            carRepo.AddCar(new Car("JHMCM56557C404453", "BMW", "X5", 2019));
-            carRepo.AddCar(new Car("5N1AT2MV0FC123456", "Nissan", "Rogue", 2022));
+/*using (var db = new AppDbContext(options))
+{
+    var c = db.Cars.FirstOrDefault(c => c.CarId == 2);
+    if (c != null)
+        c.Year = 2017;
+    db.SaveChanges();
+}
 
-            bool exit = false;
+using (var db = new AppDbContext(options))
+{
+    var c = db.Cars.FirstOrDefault(c => c.CarId == 3);
+    if (c != null)
+        db.Cars.Remove(c);
+    db.SaveChanges();
+}*/
 
-            while (!exit)
-            {
-                Console.WriteLine("\nМеню Автопарку");
-                Console.WriteLine("1. Орендувати авто");
-                Console.WriteLine("2. Повернути авто");
-                Console.WriteLine("3. Вийти");
-                Console.Write("Обери опцію: ");
-                string choice = Console.ReadLine();
 
-                switch (choice)
-                {
-                    case "1":
-                        Console.Write("Введіть ваше ім'я: ");
-                        string name = Console.ReadLine();
+using (var db = new AppDbContext(options))
+{
+    var cars = db.Cars.ToList();
+    foreach (var c in cars)
+    {
+        Console.WriteLine($"{c.CarId}. {c.Brand} {c.Model} ({c.Year}) - Rented: {c.IsRented}");
+    }
+}
 
-                        Console.Write("Введіть ваше прізвище: ");
-                        string surname = Console.ReadLine();
+using (var db = new AppDbContext(options))
+{
+    var pr = new Client
+    {
+        Name = "Олег",
+        Surname = "Семенов",
+        Age = 35,
+        TaxNumber = "9876543210",
+    };
 
-                        Console.Write("Введіть ваш РНОКПП: ");
-                        string taxNumber = Console.ReadLine();
+    db.Clients.Add(pr);
+    db.SaveChanges();
+}
 
-                        Console.Write("Введіть ваш вік: ");
-                        if (!int.TryParse(Console.ReadLine(), out int age))
-                        {
-                            Console.WriteLine("Некоректно введений вік!");
-                            break;
-                        }
-
-                        Client client = new Client(name, surname, taxNumber, age);
-
-                        var availableCars = carRepo.GetAvailableCars();
-                        if (availableCars.Count == 0)
-                        {
-                            Console.WriteLine("На даний момент вільних авто немає.");
-                            break;
-                        }
-
-                        Console.WriteLine("Вільні авто:");
-                        foreach (var car in availableCars)
-                        {
-                            Console.WriteLine($"{car.VIN} - {car.Brand} {car.Model} ({car.Year})");
-                        }
-
-                        Console.Write("Введіть VIN авто для оренди: ");
-                        string vinRent = Console.ReadLine();
-                        rentalService.RentCar(vinRent, client);
-                        break;
-
-                    case "2":
-                        Console.Write("Введіть VIN авто для повернення: ");
-                        string vinReturn = Console.ReadLine();
-                        rentalService.ReturnCar(vinReturn);
-                        break;
-
-                    case "3":
-                        exit = true;
-                        Console.WriteLine("Дякуємо за користування автопарком!");
-                        break;
-
-                    default:
-                        Console.WriteLine("Такої опції не існує. Спробуйте ще раз.");
-                        break;
-                }
-            }
-        }
+using (var db = new AppDbContext(options))
+{
+    var cl = db.Clients.ToList();
+    foreach (var c in cl)
+    {
+        Console.WriteLine($"{c.ClientId}. {c.Name} {c.Surname} {c.Age} {c.TaxNumber}");
     }
 }
