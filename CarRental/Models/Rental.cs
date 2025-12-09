@@ -15,12 +15,12 @@ namespace CarRental.Models
         [Required]
         [ForeignKey("Car")]
         public int CarId { get; set; }
-        public Car Car { get; set; }
+        public virtual Car Car { get; set; }
 
         [Required]
         [ForeignKey("Client")]
         public int ClientId { get; set; }
-        public Client Client { get; set; }
+        public virtual Client Client { get; set; }
 
         [Required]
         public DateTime RentDate { get; set; }

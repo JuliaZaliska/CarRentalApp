@@ -19,14 +19,15 @@ namespace CarRental.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CarRentalDB;Trusted_Connection=True;");
-                //optionsBuilder.LogTo(Console.WriteLine);
+                optionsBuilder
+                    .UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=CarRentalDB;Trusted_Connection=True;")
+                    .UseLazyLoadingProxies();
+                    //.LogTo(Console.WriteLine);
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             // Ключі
             modelBuilder.Entity<Car>()
                 .HasKey(c => c.CarId);
@@ -71,7 +72,8 @@ namespace CarRental.Data
                 new Car { CarId = 1, VIN = "7TDBE32K123456789", Brand = "Mazda", Model = "CX-5", Year = 2021 },
                 new Car { CarId = 2, VIN = "8BAJU71030BL12345", Brand = "Audi", Model = "Q7", Year = 2017 }
             );
-
+        
+            // TPH
             modelBuilder.Entity<Client>()
                 .HasDiscriminator<string>("ClientType")
                 .HasValue<Client>("Standard")
