@@ -51,13 +51,8 @@ namespace CarRental.Multithreading
                 _generatedNames.Add(name);
             }
             using var context = new AppDbContext(_options);
-            context.Clients.Add(new Client
-            {
-                Name = name,
-                Surname = "Lock",
-                Age = 18 + (id % 5),
-                TaxNumber = $"{id:D10}"
-            });
+            context.Clients.Add(new Client { Name = name, Surname = "Lock", Age = 18 + (id % 5), TaxNumber = $"{id:D10}" });
+
             context.SaveChanges();
             Console.WriteLine($"Створено(Lock): {name}");
         }
