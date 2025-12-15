@@ -12,7 +12,7 @@ namespace CarRental.Multithreading
         private readonly DbContextOptions<AppDbContext> _options;
         private const int TotalEntities = 100;
         private static int _globalCounter = 0;
-        private static readonly SemaphoreSlim _sem = new(2, 5);
+        private static readonly SemaphoreSlim _sem = new(5, 5);
         private ConcurrentBag<int> _generatedClientIds = new();
         public MultithreadingDemo(DbContextOptions<AppDbContext> options) => _options = options;
         public async Task SetupDatabaseAsync()
