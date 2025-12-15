@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
-namespace CarRental
+namespace CarRental.Linq
 {
     public static class LinqExamples
     {

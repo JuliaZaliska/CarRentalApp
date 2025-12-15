@@ -1,9 +1,14 @@
-﻿using CarRental;
-using CarRental.Data;
+﻿using CarRental.Data;
+using CarRental.Linq;
 using CarRental.Models;
+using CarRental.Multithreading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System.Text;
+
+Console.OutputEncoding = Encoding.UTF8;
+Console.InputEncoding = Encoding.UTF8;
 
 var config = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
@@ -13,7 +18,18 @@ var options = new DbContextOptionsBuilder<AppDbContext>()
     .UseSqlServer(config.GetConnectionString("DefaultConnection"))
     .Options;
 
-using (var db = new AppDbContext(options))
+var demo1 = new MultithreadingDemo(options);
+await demo1.SetupDatabaseAsync();
+demo1.RunThreadApproach();
+
+await demo1.RunTPLApproachAsync();
+await demo1.RunParallelReadAsync();
+
+//var demo2 = new PrimitivesDemo(options);
+//demo2.RunDemoThreads();
+
+
+/*using (var db = new AppDbContext(options))
     LinqExamples.ShowQueries(db);
 
 /*var db = new AppDbContext();
@@ -32,7 +48,7 @@ var car = new CarRental.Models.Car
 db.Cars.Add(car);
 Console.WriteLine($"Adding car: {car.CarId}");
 db.SaveChanges();
-Console.WriteLine($"Adding car: {car.CarId}");*/
+Console.WriteLine($"Adding car: {car.CarId}");
 
 /*using (var db = new AppDbContext(options))
 {
@@ -63,10 +79,10 @@ using (var db = new AppDbContext(options))
     if (c != null)
         db.Cars.Remove(c);
     db.SaveChanges();
-}*/
+}
 
 
-using (var db = new AppDbContext(options))
+/*using (var db = new AppDbContext(options))
 {
     var cars = db.Cars.ToList();
     foreach (var c in cars)
@@ -91,4 +107,4 @@ using (var db = new AppDbContext(options))
     {
         Console.WriteLine($"{r.RentalId}. ClientId: {r.ClientId}, CarId: {r.CarId}, RentDate: {r.RentDate}, ReturnDate: {r.ReturnDate}");
     }
-}
+}*/

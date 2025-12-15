@@ -28,4 +28,3 @@ namespace CarRental.Models
         public decimal PricePerDay { get; set; }
     }
 }
-
